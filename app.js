@@ -62,6 +62,39 @@ app.post('/usuarios', async (req, res) => {
     }
 });
 
+//Buscar usuario por nombre
+app.get('/usuarios/:nombre', async (req, res) => {
+    const { nombre } = req.params || {};
+    try {
+        const usuario = await Usuario.findOne({ nombre });
+        return res.json(usuario);
+    } catch (error) {
+        return res.status(500).send('Error al buscar usuario');
+    }
+});
+
+//Actualizar usuario
+app.put('/usuarios/:nombre', async (req, res) => {
+    const { nombre } = req.params || {};
+    const { nombre: nuevoNombre, clave: nuevaClave } = req.body || {};
+    try {
+        const usuario = await Usuario.findOneAndUpdate({ nombre }, { nombre: nuevoNombre, clave: nuevaClave }, { new: true });
+        return res.json(usuario);
+    } catch (error) {
+        return res.status(500).send('Error al actualizar usuario');
+    }
+});
+
+//Eliminar usuario
+app.delete('/usuarios/:nombre', async (req, res) => {
+    const { nombre } = req.params || {};
+    try {
+        await Usuario.findOneAndDelete({ nombre });
+        return res.json({ mensaje: 'Usuario eliminado correctamente' });
+    } catch (error) {
+        return res.status(500).send('Error al eliminar usuario');
+    }
+});
 
 //definir el puerto
 const PORT = process.env.PORT || 3000;
